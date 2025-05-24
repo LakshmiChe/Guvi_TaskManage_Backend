@@ -1,10 +1,10 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const serverless = require('serverless-http');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/taskRoutes');
-const serverless = require('serverless-http');
 
 // Load environment variables
 dotenv.config();
@@ -14,7 +14,7 @@ const app = express();
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // Parse JSON requests
+app.use(express.json());
 
 // Connect to MongoDB
 connectDB();
@@ -28,5 +28,6 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: err.message });
 });
 
-// Export for serverless
-module.exports = serverless(app);
+// Export as serverless function
+module.exports = app;
+module.exports.handler = serverless(app);
