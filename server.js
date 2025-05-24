@@ -7,7 +7,7 @@ const fs = require('fs');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/taskRoutes');
-
+const serverless = require('serverless-http');
 
 // Load environment variables
 dotenv.config();
@@ -27,10 +27,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
 // Cron Job for Daily Deadline Reminders
-cron.schedule("0 8 * * *", async () => {
-    console.log("Running daily deadline reminder cron job...");
-    await sendDeadlineReminders();
-});
+// cron.schedule("0 8 * * *", async () => {
+//     console.log("Running daily deadline reminder cron job...");
+//     await sendDeadlineReminders();
+// });
 // Error handling middleware
 app.use((err, req, res, next) => {
     res.status(500).json({ message: err.message });
@@ -38,4 +38,8 @@ app.use((err, req, res, next) => {
 
 // Start the server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+// Export as serverless function
+module.exports = serverless(app);
